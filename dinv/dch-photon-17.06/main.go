@@ -51,6 +51,29 @@ func init() {
 	flag.StringVar(&vicIP, "vic-ip", "", "Set IP for automatic certificate creation")
 }
 
+// This method will check if the vicIP is qualified FQDN or IP address
+// it will return IP address if FQDN is input
+// return nil if non qualified fqdn or ip address is input
+func check_vic_ip(vicIP string) (net.IP, error) {
+	var ip_addr net.IP
+	if vicIP != "" {
+		ip_addr = net.ParseIP(vicIP)
+		if ip_addr == nil {
+			ips, err = net.LookupIP(vicIP)
+			if err != nil {
+				return nil, err
+			}
+			ip_addr = net.ParseIP(ips[0].String())
+		}
+	} else {
+		ip, err = getFirstIP("eth0")
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+	}
+	return ip_addr, nil
+}
+
 func main() {
 	flag.Parse()
 
@@ -79,7 +102,13 @@ func main() {
 				log.Debug("Certs not available, generating...")
 				var ip net.IP
 				if vicIP != "" {
-					ip = net.ParseIP(vicIP)
+					ip, err = check_vic_ip(vicIP)
+					if err != nil {
+						ip, err = getFirstIP("eth0")
+						if err != nil {
+							log.Fatal(err.Error())
+						}
+					}
 				} else {
 					ip, err = getFirstIP("eth0")
 					if err != nil {
@@ -108,7 +137,13 @@ func main() {
 				log.Debug("Certs not available, generating...")
 				var ip net.IP
 				if vicIP != "" {
-					ip = net.ParseIP(vicIP)
+					ip, err = check_vic_ip(vicIP)
+					if err != nil {
+						ip, err = getFirstIP("eth0")
+						if err != nil {
+							log.Fatal(err.Error())
+						}
+					}
 				} else {
 					ip, err = getFirstIP("eth0")
 					if err != nil {
