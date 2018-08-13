@@ -59,17 +59,18 @@ func check_vic_ip(vicIP string) (net.IP, error) {
 	if vicIP != "" {
 		ip_addr = net.ParseIP(vicIP)
 		if ip_addr == nil {
-			ips, err = net.LookupIP(vicIP)
+			ips, err := net.LookupIP(vicIP)
 			if err != nil {
 				return nil, err
 			}
 			ip_addr = net.ParseIP(ips[0].String())
 		}
 	} else {
-		ip, err = getFirstIP("eth0")
+		ip, err := getFirstIP("eth0")
 		if err != nil {
-			log.Fatal(err.Error())
+			return nil, err
 		}
+		ip_addr = ip
 	}
 	return ip_addr, nil
 }
@@ -101,19 +102,9 @@ func main() {
 			if err := certsExist(files); err != nil {
 				log.Debug("Certs not available, generating...")
 				var ip net.IP
-				if vicIP != "" {
-					ip, err = check_vic_ip(vicIP)
-					if err != nil {
-						ip, err = getFirstIP("eth0")
-						if err != nil {
-							log.Fatal(err.Error())
-						}
-					}
-				} else {
-					ip, err = getFirstIP("eth0")
-					if err != nil {
-						log.Fatal(err.Error())
-					}
+				ip, err = check_vic_ip(vicIP)
+				if err != nil {
+					log.Fatal(err.Error())
 				}
 				if err := generateSelfSignedCerts(ip); err != nil {
 					log.Fatal(err.Error())
@@ -136,19 +127,9 @@ func main() {
 			if err := certsExist(files); err != nil {
 				log.Debug("Certs not available, generating...")
 				var ip net.IP
-				if vicIP != "" {
-					ip, err = check_vic_ip(vicIP)
-					if err != nil {
-						ip, err = getFirstIP("eth0")
-						if err != nil {
-							log.Fatal(err.Error())
-						}
-					}
-				} else {
-					ip, err = getFirstIP("eth0")
-					if err != nil {
-						log.Fatal(err.Error())
-					}
+				ip, err = check_vic_ip(vicIP)
+				if err != nil {
+					log.Fatal(err.Error())
 				}
 				if err := generateCACerts(ip); err != nil {
 					log.Fatal(err.Error())
