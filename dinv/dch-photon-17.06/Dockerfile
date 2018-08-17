@@ -1,6 +1,8 @@
 # Build certgen in separate container
 FROM golang:1.8 AS build-env
+# copy the non-version specific files first so version specific can overwrite
 ADD . /go/src/dinv
+ADD ./dch-photon-17.06/* /go/src/dinv/
 RUN cd /go/src/dinv && go get -v ./... && go build -o dinv && strip dinv
 
 # Build photon base image
