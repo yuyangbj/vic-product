@@ -172,17 +172,17 @@ pipeline:
       GOPATH: /go
       SHELL: /bin/bash
     secrets:
-      - bridge_network
-      - public_network
-      - test_datastore
-      - test_password
-      - test_resource
-      - test_url
-      - test_username
+    - bridge_network
+    - public_network
+    - test_datastore
+    - test_password
+    - test_resource
+    - test_url
+    - test_username
     volumes:
-      - /tmp
+    - /tmp
     commands:
-      - 'pybot -d robot-logs/ova-cleanup-logs -s OVA-Cleanup tests/common-ova'
+    - 'pybot -d robot-logs/ova-cleanup-logs -s OVA-Cleanup tests/common-ova'
     when:
       repo: vmware/vic-product
       event: [push, pull_request, tag, deployment]

@@ -100,7 +100,7 @@ Verify the certificate is not signed by nil when vic-ip is specified with FQDN
     Log  ${output}
     Should Be Equal As Integers  ${rc}  0
     # The IP address for FQDN foo.com will be signed
-    ${rc}  ${output}=  Run And Return Rc And Output  ${DEFAULT_LOCAL_DOCKER} -H ${VCH-IP}:12396 --tlsverify --tlscacert ./certs/ca.crt --tlskey ./certs/docker-client.key --tlscert ./certs/docker-client.crt info
+    ${rc}  ${output}=  Run And Return Rc And Output  ${DEFAULT_LOCAL_DOCKER} -H ${VCH-IP}:12376 --tlsverify --tlscacert ./certs/ca.crt --tlskey ./certs/docker-client.key --tlscert ./certs/docker-client.crt info
     Log  ${output}
     Should Not Contain  ${output}  certificate is valid for ,
 
